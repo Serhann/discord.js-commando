@@ -1,42 +1,30 @@
-const oneLine = require('common-tags').oneLine;
+const { oneLine } = require('common-tags');
 const Command = require('../base');
-const Discord = require('discord.js');
 
 module.exports = class PingCommand extends Command {
-	constructor(client) {
-		super(client, {
+	   constructor(client) {
+        super(client, {
 			name: 'ping',
-			group: 'util',
+			aliases: ['gecikme'],
+			group: 'muzik',
 			memberName: 'ping',
 			description: 'Botun pingini gösterir.',
-			throttling: {
-				usages: 1,
-				duration: 10
-			}
-		});
-	}
+			guildOnly: true,
+            throttling: {
+                usages: 1,
+                duration: 10
+            },
+        });
 
-	async run(msg) {
+    }
+
+    async run(msg) {
 		if(!msg.editable) {
 			const pingMsg = await msg.reply('Hesaplanıyor...');
-			const embed = new Discord.RichEmbed()
-			.setColor('RANDOM')
-			.setDescription(oneLine`
-				:ping_pong: Mesaj gecikmesi: ${(pingMsg.createdTimestamp - msg.createdTimestamp) / 1000}s.
-				${this.client.ping ? `Normal gecikme: ${Math.round(this.client.ping / 1000)}s.` : ''}
-			`);
-			
-			return pingMsg.edit(msg.channel.type !== 'dm' ? `${msg.author},` : '', { embed });
+			return pingMsg.edit('' + (msg.channel.type !== 'dm' ? msg.author : '') + ':mega: *Pong!* Mesaj Gecikmesi: ' + (pingMsg.createdTimestamp - msg.createdTimestamp) + 'ms! ' + (this.client.ping ? '`Websocket: ' + Math.floor(this.client.ping) + 'ms`' : ''));
 		} else {
 			await msg.edit('Hesaplanıyor...');
-			const embed = new Discord.RichEmbed()
-			.setColor('RANDOM')
-			.setDescription(oneLine`
-				:ping_pong: Mesaj gecikmesi: ${(msg.editedTimestamp - msg.createdTimestamp) / 1000}s.
-				${this.client.ping ? `Normal gecikme: ${Math.round(this.client.ping / 1000)}s.` : ''}
-			`);
-			
-			return msg.edit({ embed });
+			return msg.edit('' + (msg.channel.type !== 'dm' ? msg.author : '') + ':mega: *Pong!* Mesaj Gecikmesi: ' + (msg.createdTimestamp - msg.createdTimestamp) + 'ms! ' + (this.client.ping ? '`Websocket: ' + Math.floor(this.client.ping) + 'ms`' : ''));
 		}
-	}
+    }
 };
